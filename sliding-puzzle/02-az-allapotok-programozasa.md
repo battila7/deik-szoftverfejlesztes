@@ -26,6 +26,9 @@ Az absztrakt állapottér reprezentációban ez nagyon egyszerű, ugyanakkor Jav
 
 A következőkben áttekintünk néhány válogatott megoldást a bábuk pozíciójának tárolására. Fontos kiemelni, hogy egyik sem az egyetlen helyes megoldás, hanem mindegyik rendelkezik előnyökkel és hátrányokkal. Rajtunk áll, hogy ezeket figyelembe véve mely megoldást ítéljük a megfelelőnek a jelen problémához.
 
+A választás nehézségéhez (és a válasz melletti kitartáshoz - *commitment*) kapcsolódó érdekes cikk és beszélgetés:
+- https://www.reddit.com/r/programming/comments/1jyxu3p/engineers_who_wont_commit/
+
 ### A pozíciók tárolása listában (tömbben)
 
 Az egyes bábuk pozícióját egy listában (esetleg tömbben) tároljuk, ahol az első elem a blokk pozíciója, a második elem a kék vödör pozíciója és így tovább.

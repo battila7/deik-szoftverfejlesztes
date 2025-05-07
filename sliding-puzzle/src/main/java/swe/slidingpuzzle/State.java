@@ -1,5 +1,7 @@
 package swe.slidingpuzzle;
 
+
+
 public class State {
     private final Piece redShoe;
     private final Piece blueShoe;
@@ -44,5 +46,17 @@ public class State {
 
     public Piece getBlock() {
         return block;
+    }
+
+    public State moveUp() {
+        if (block.row() - 1 < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (block.row() - 1 == blackShoe.row()) {
+            throw new TargetTileOccupiedException();
+        }
+
+        return null;
     }
 }

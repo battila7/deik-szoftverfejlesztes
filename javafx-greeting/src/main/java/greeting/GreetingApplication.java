@@ -17,35 +17,33 @@ public class GreetingApplication extends Application {
         var nameField = new TextField();
         var greetingLabel = new Label();
 
-        // A TextField típusnak van egy textProperty mezője, mely
-        // egy olyan Property, ami a szöveges mezőbe beírt szöveget
-        // csomagolja be.
+        // Vegyük észre, hogy az előző kódrészlet úgy indult, hogy
+        //   nameField
+        // Ezzel szemben itt már a greetingLabel-lel dolgozunk.
         //
-        // Miért van
-        //   StringProperty textProperty;
-        // mezője a TextField típusnak, ahelyett, hogy
-        //   String text;
-        // lenne?
+        // Míg a korábbi kód azt fejezte ki, hogy "amikor a nameField
+        // textProperty által csomagolt érték megváltozik, akkor ez meg
+        // az történjen", addig ez az új változat valami olyasmit mond,
+        // hogy "a greetingLabel textProperty által csomagolt értéket
+        // kössük a nameField textProperty értékéhez".
         //
-        // A Property-típusú (amilyen a StringProperty is) mezőknek
-        // az a nagy előnye az "egyszerű" mezőkkel szemben, hogy
-        // fel lehet iratkozni arra, ha megváltoznak. Sőt, a különböző Propertyket
-        // bindingok (kötések) útján össze is lehet kötni: amikor az egyik
-        // megváltozik, akkor a másik is.
+        // Azaz, míg az előző megoldásaink manuálisan, lényegében imperatívan
+        // szinkronizálták a címke feliratát a szöveges mező tartalmával,
+        // addig most lényegében deklaratívan csak hozzákötjük a címke
+        // feliratát a szöveges mező tartalmához.
         //
-        // Az alábbi kódrészlet sokkal magasabb absztrakciós szinten van, mint az
-        // előző, EventHandler-alapú megoldás. Ahelyett, hogy a leütésekre reagálnánk
-        // (melyek lehetnek a szövet nem befolyásoló leütések is, mint egy SHIFT),
-        // közvetlenül arra reagálunk, hogy a TextField tartalma megváltozott.
+        // A Property-kötések ereje pont ebben a deklaratív, valamint reaktív
+        // megközelítésben rejlik: amint a nameField.textProperty megváltozik,
+        // minden, olyan property, melyet kötöttünk hozzá, szintén meg fog változni.
+        // Nekünk semmilyen teendőnk nincs, egyszerűen csak létre kellett hoznunk a
+        // kötést, onnantól az már automatikusan teszi a dolgát.
         //
-        // A subscribe metódus egy Consumert vár (ezt a funkcionális interfészt már ismerjük),
-        // mely a mezőbe írt új szöveget kapja. Ha a megelőző értékre is kíváncsiak vagyunk,
-        // akkor használjuk a subscribe BiConsumert váró túlterhelését.
-        nameField.textProperty().subscribe(enteredName -> {
-            greetingLabel.setText(
-                    "Szia, %s!".formatted(enteredName)
-            );
-        });
+        // Az alábbi kódrészlet egy egyirányú (unidirection) kötést hoz létre:
+        // a nameField.textProperty megváltozása maga után vonja a greetingLabel.textProperty
+        // megváltozását, de fordítva NEM.
+        greetingLabel.textProperty().bind(
+                nameField.textProperty()
+        );
 
         var scene = new Scene(
                 new VBox(

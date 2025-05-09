@@ -17,23 +17,31 @@ public class GreetingApplication extends Application {
         var nameField = new TextField();
         var greetingLabel = new Label();
 
-        // A .map() helyett használhatjuk a Bindings utility class
-        // format() metódusát is.
+        // Bónusz!
         //
-        // A Bindings osztály csupa olyan metódust tartalmaz, melyek
-        // megkönnyítik, magasabb absztrakciós szintre emelik az ObservableValue
-        // típussal (és társaival) végzett munkát.
+        // Az előző megoldásainkban nagyon idétlen volt, hogy amikor
+        // valaki nem írt be semmit, akkor a "Szia, !" szöveg jelent
+        // meg a címkén.
         //
-        // Például, ahelyett, hogy .map()-pel formázunk Stringet, helyette
-        // használhatjuk a sokkal direktebb Bindings.format() metódust.
-        // Ennek érdekessége, hogy mind ObservableValue példányokat, mind
-        // "egyszerű", nem-reaktív példányokat átadhatunk neki, mindet helyesen
-        // fogja kezelni: azaz, ha egy ObservableValue értéke megváltozik, akkor
-        // a Bindings.format által visszaadott valami is megváltozik.
+        // Ezt kiküszöbölendő, készítsünk most egy olyan ObservableValue-t,
+        // mely
+        // - A "Szia!" szöveget tartalmazza, ha a szövegdoboz üres.
+        // - A köszönést tartalmazza, ha valamit írtak a szövegdobozba.
+        //
+        // Ezt a viselkedést ismét a Bindings segédosztállyal tudjuk a legkönnyebben
+        // elérni. Ez egy ObservableBooleanValue feltételt vár. Utána pedig van
+        // egy then() és egy otherwise() ága. Amikor a feltétel értéke megváltozik,
+        // mindig a megfelelő ág kerül majd kiértékelésre.
         greetingLabel.textProperty().bind(
-                Bindings.format(
-                        "Szia, %s!",
-                        nameField.textProperty()
+                Bindings.when(
+                        nameField.textProperty().isNotEmpty()
+                ).then(
+                        Bindings.format(
+                                "Szia, %s!",
+                                nameField.textProperty()
+                        )
+                ).otherwise(
+                        "Szia!"
                 )
         );
 

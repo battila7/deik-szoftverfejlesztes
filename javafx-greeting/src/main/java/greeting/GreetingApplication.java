@@ -17,6 +17,21 @@ public class GreetingApplication extends Application {
         var nameField = new TextField();
         var greetingLabel = new Label();
 
+        // Hozzáadunk egy EventListenert, melyet a keretrendszer
+        // minden egyes KeyTyped (azaz, billentyű-leütés) esemény
+        // alkalmával meghív.
+        //
+        // Az EventListener egy funkcionális interfész, azaz meg tudjuk
+        // valósítani egy lambdával.
+        //
+        // Ebben a lambdában tudjuk megvalósítani a logikánkat: hogy
+        // a greetingLabel felirata megfelelő legyen.
+        nameField.setOnKeyTyped(event -> {
+            greetingLabel.setText(
+                    "Szia, %s!".formatted(nameField.getText())
+            );
+        });
+
         var scene = new Scene(
                 new VBox(
                     new HBox(

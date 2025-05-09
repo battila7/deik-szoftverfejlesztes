@@ -17,18 +17,33 @@ public class GreetingApplication extends Application {
         var nameField = new TextField();
         var greetingLabel = new Label();
 
-        // Hozzáadunk egy EventListenert, melyet a keretrendszer
-        // minden egyes KeyTyped (azaz, billentyű-leütés) esemény
-        // alkalmával meghív.
+        // A TextField típusnak van egy textProperty mezője, mely
+        // egy olyan Property, ami a szöveges mezőbe beírt szöveget
+        // csomagolja be.
         //
-        // Az EventListener egy funkcionális interfész, azaz meg tudjuk
-        // valósítani egy lambdával.
+        // Miért van
+        //   StringProperty textProperty;
+        // mezője a TextField típusnak, ahelyett, hogy
+        //   String text;
+        // lenne?
         //
-        // Ebben a lambdában tudjuk megvalósítani a logikánkat: hogy
-        // a greetingLabel felirata megfelelő legyen.
-        nameField.setOnKeyTyped(event -> {
+        // A Property-típusú (amilyen a StringProperty is) mezőknek
+        // az a nagy előnye az "egyszerű" mezőkkel szemben, hogy
+        // fel lehet iratkozni arra, ha megváltoznak. Sőt, a különböző Propertyket
+        // bindingok (kötések) útján össze is lehet kötni: amikor az egyik
+        // megváltozik, akkor a másik is.
+        //
+        // Az alábbi kódrészlet sokkal magasabb absztrakciós szinten van, mint az
+        // előző, EventHandler-alapú megoldás. Ahelyett, hogy a leütésekre reagálnánk
+        // (melyek lehetnek a szövet nem befolyásoló leütések is, mint egy SHIFT),
+        // közvetlenül arra reagálunk, hogy a TextField tartalma megváltozott.
+        //
+        // A subscribe metódus egy Consumert vár (ezt a funkcionális interfészt már ismerjük),
+        // mely a mezőbe írt új szöveget kapja. Ha a megelőző értékre is kíváncsiak vagyunk,
+        // akkor használjuk a subscribe BiConsumert váró túlterhelését.
+        nameField.textProperty().subscribe(enteredName -> {
             greetingLabel.setText(
-                    "Szia, %s!".formatted(nameField.getText())
+                    "Szia, %s!".formatted(enteredName)
             );
         });
 

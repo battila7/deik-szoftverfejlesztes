@@ -2,6 +2,7 @@ package greeting;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,24 +15,7 @@ public class GreetingApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         var nameField = new TextField();
-        var greetingLabel = new Label("Szia!");
-
-        var greetingExpression = Bindings.format(
-                "Szia, %s",
-                nameField.textProperty()
-        );
-
-        var changeLabelButton = new Button(
-            "Greet me!"
-        );
-
-        changeLabelButton.setOnAction(
-                event -> {
-                    greetingLabel.setText(
-                            greetingExpression.getValue()
-                    );
-                }
-        );
+        var greetingLabel = new Label();
 
         var scene = new Scene(
                 new VBox(
@@ -40,8 +24,7 @@ public class GreetingApplication extends Application {
                             new Label("Ide írd a neved"),
                             nameField
                     ),
-                    greetingLabel,
-                    changeLabelButton
+                    greetingLabel
                 )
         );
 

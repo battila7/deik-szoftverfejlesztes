@@ -17,32 +17,46 @@ public class GreetingApplication extends Application {
         var nameField = new TextField();
         var greetingLabel = new Label();
 
-        // Vegyük észre, hogy az előző kódrészlet úgy indult, hogy
-        //   nameField
-        // Ezzel szemben itt már a greetingLabel-lel dolgozunk.
+        // A Propertyk másik legmenőbb tulajdonsága (azon túl, hogy
+        // reaktívak), hogy deklaratívan származtathatók belőlük értékek!
         //
-        // Míg a korábbi kód azt fejezte ki, hogy "amikor a nameField
-        // textProperty által csomagolt érték megváltozik, akkor ez meg
-        // az történjen", addig ez az új változat valami olyasmit mond,
-        // hogy "a greetingLabel textProperty által csomagolt értéket
-        // kössük a nameField textProperty értékéhez".
+        // A greetingLabel címkénkre nem csak egy nevet, hanem egy teljes
+        // köszönést szeretnénk írni. Azaz a korábbi megoldás:
+        //   greetingLabel.textProperty.bind(nameField.textProperty())
+        // nem elégséges.
         //
-        // Azaz, míg az előző megoldásaink manuálisan, lényegében imperatívan
-        // szinkronizálták a címke feliratát a szöveges mező tartalmával,
-        // addig most lényegében deklaratívan csak hozzákötjük a címke
-        // feliratát a szöveges mező tartalmához.
+        // Mi a névből szeretnénk egy köszönést származtatni, mely, amikor
+        // a név megváltozik, szintén megváltozik.
         //
-        // A Property-kötések ereje pont ebben a deklaratív, valamint reaktív
-        // megközelítésben rejlik: amint a nameField.textProperty megváltozik,
-        // minden, olyan property, melyet kötöttünk hozzá, szintén meg fog változni.
-        // Nekünk semmilyen teendőnk nincs, egyszerűen csak létre kellett hoznunk a
-        // kötést, onnantól az már automatikusan teszi a dolgát.
+        // Erre kínál lehetőséget a map(Function mapper) metódus, mely egy olyan
+        // ObservableValue-t fog visszaadni, mely a mapper kimenetét csomagolja.
+        // Na, de várjunk csak, mi az az ObservableValue?
         //
-        // Az alábbi kódrészlet egy egyirányú (unidirection) kötést hoz létre:
-        // a nameField.textProperty megváltozása maga után vonja a greetingLabel.textProperty
-        // megváltozását, de fordítva NEM.
+        // Az ObservableValue egy doboz, mely képes szólni, ha megváltozik a tartalma.
+        // Eddig nem mondtuk ki, de valójában minden Property is ObservableValue egyben.
+        // A Property csupán hozzáad még sok-sok funkcionalitást, hiszen egy ObservableValue
+        // pontosan csak ennyi: egy doboz, ami szól, ha változik a tartalma.
+        //
+        // Erre az absztrakcióra azonban rengeteg dolgot lehet építeni, például
+        // valami ilyesmit:
+        //   ha megváltozik a doboz tartalma, akkor csináld vele ezt és az eredményt
+        //   tedd bele egy másik, szólogatós dobozba
+        // Pontosan ezt teszi az x.map(mapper):
+        //   visszaad egy olyan dobozt, melynek tartalma az x tartalmával együtt változik,
+        //   alkalmazva x tartalmára a mapper Functiont.
+        //
+        // Végül, amit a kódunk csinál, irtó egyszerű:
+        //   - A nameFieldbe írt névből a map() segítségével létrehozunk egy
+        //     új ObservableValue-t,mely a köszönést tartalmazza.
+        //   - A greetingLabel címke feliratát kötjük ehhez az ObservableValue-hoz.
+        //
+        // Amikor a nameField.textProperty() értéke megváltozik, abban a pillanatban
+        // megváltozik a map() által előállított ObservableValue értéke is, aminek
+        // következtében pedig frissülni fog a címkénk.
         greetingLabel.textProperty().bind(
-                nameField.textProperty()
+                nameField.textProperty().map(
+                        enteredName -> "Szia, %s!".formatted(enteredName)
+                )
         );
 
         var scene = new Scene(

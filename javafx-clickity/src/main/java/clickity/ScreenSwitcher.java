@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import java.util.EnumMap;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 
@@ -33,6 +34,8 @@ public enum ScreenSwitcher {
      * <p>
      * Each enum constant stores the path of the screen's
      * FXML description that we can load the screen's UI from.
+     * <p>
+     * Replace the constants with the actual screen of your application.
      */
     public enum Screen {
         INTRO("/intro.fxml"),
@@ -147,6 +150,12 @@ public enum ScreenSwitcher {
         var loadedScreen = loadedScreens.get(
                 requireNonNull(screen)
         );
+
+        if (isNull(scene)) {
+            throw new IllegalStateException(
+                    "Scene is null! You must call setScene before switching screens."
+            );
+        }
 
         scene.setRoot(loadedScreen.root);
     }
